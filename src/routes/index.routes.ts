@@ -1,7 +1,8 @@
-import { Router } from 'express'
+import { Router } from "express";
+import { crypto } from "./sub-routes";
 
-const router = Router()
+const router = Router();
 
-router.use('/cryptos')
+router.use("/cryptos", crypto);
 
-export default router
+export default router;
