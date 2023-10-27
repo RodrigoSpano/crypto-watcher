@@ -1,6 +1,7 @@
 export type TCrypto = {
   id: number;
   name: string;
+  symbol: string;
   slug: string;
   last_updated: string;
   quote: TCryptoQuote;
