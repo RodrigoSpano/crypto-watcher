@@ -6,20 +6,18 @@ import CryptoModel from "./cryptoModel";
 export default class WatcherModel implements IWatcherModel {
   private Crypto: CryptoModel = new CryptoModel();
 
-  async findCoin(name: string): Promise<void> {
+  async findCoin(name: string): Promise<TCrypto> {
     const tokens = await this.Crypto.getCurrencies();
     const findCoin = tokens!.find((el) => el.slug === name);
     if (!findCoin) throw new Error("invalid coin name");
     return findCoin;
   }
 
-  async spyPrice(
-    coin: TCrypto,
-    expectedValue: number
-  ): Promise<TCrypto | undefined> {
+  async spyPrice(coin: TCrypto, expectedValue: number): Promise<void> {
     cron.schedule("* * * * *", () => {
       if (coin.quote.price.toFixed(2) == expectedValue.toFixed(2)) {
-        return coin;
+        console.log(coin);
+        //todo => enviar mail avisando q la moneda ${coin} alcanzo el precio esperado
       }
     });
   }
