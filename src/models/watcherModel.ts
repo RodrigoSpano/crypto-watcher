@@ -2,6 +2,7 @@ import cron from "node-cron";
 import { TCrypto } from "../utils/types/crypto";
 import { IWatcherModel } from "../utils/types/watcher";
 import CryptoModel from "./cryptoModel";
+import sendEmail from "../services/nodemailer";
 
 export default class WatcherModel implements IWatcherModel {
   private Crypto: CryptoModel = new CryptoModel();
@@ -14,10 +15,9 @@ export default class WatcherModel implements IWatcherModel {
   }
 
   async spyPrice(coin: TCrypto, expectedValue: number): Promise<void> {
-    cron.schedule("* * * * *", () => {
+    cron.schedule("* * * * *", async () => {
       if (coin.quote.price.toFixed(2) == expectedValue.toFixed(2)) {
-        console.log(coin);
-        //todo => enviar mail avisando q la moneda ${coin} alcanzo el precio esperado
+        await sendEmail(coin.name, coin.quote.price);
       }
     });
   }
