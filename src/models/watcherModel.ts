@@ -14,11 +14,18 @@ export default class WatcherModel implements IWatcherModel {
     return findCoin;
   }
 
-  async spyPrice(coin: TCrypto, expectedValue: number): Promise<void> {
-    cron.schedule("* * * * *", async () => {
-      if (coin.quote.price.toFixed(2) == expectedValue.toFixed(2)) {
-        await sendEmail(coin.name, coin.quote.price);
+  async spyPrice(name: string, expectedValue: number): Promise<void> {
+    const task = cron.schedule("*/15 * * * * *", async () => {
+      const token: TCrypto = await this.findCoin(name);
+      if (token.quote.price.toString().startsWith(expectedValue.toString())) {
+        // await sendEmail(coin.name, coin.quote.price);
+        console.log(
+          `reached, ${name} - actual: ${token.quote.price} - expected: ${expectedValue} `
+        );
+        task.stop();
       }
+      console.log(`waiting for ${expectedValue}, now: ${token.quote.price}`);
     });
+    task.start();
   }
 }
