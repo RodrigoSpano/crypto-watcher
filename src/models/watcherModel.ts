@@ -18,13 +18,13 @@ export default class WatcherModel implements IWatcherModel {
     const task = cron.schedule("*/15 * * * * *", async () => {
       const token: TCrypto = await this.findCoin(name);
       if (token.quote.price.toString().startsWith(expectedValue.toString())) {
-        // await sendEmail(coin.name, coin.quote.price);
-        console.log(
-          `reached, ${name} - actual: ${token.quote.price} - expected: ${expectedValue} `
-        );
+        const message: string = `reached, ${name} - actual: $${token.quote.price} - expected: $${expectedValue} `;
+        sendEmail(name, token.quote.price, message);
         task.stop();
       }
-      console.log(`waiting for ${expectedValue}, now: ${token.quote.price}`);
+      console.log(
+        `waiting for ${name} to be ${expectedValue}, now: ${token.quote.price}`
+      );
     });
     task.start();
   }

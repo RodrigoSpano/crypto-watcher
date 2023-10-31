@@ -1,20 +1,23 @@
 import nodemailer from "nodemailer";
 
 const transporter = nodemailer.createTransport({
-  host: "smtp.forwardemail.net",
-  port: 465,
+  service: "gmail",
   secure: true,
   auth: {
-    user: process.env.ADMIN_USER,
-    pass: process.env.ADMIN_PASS,
+    user: `${process.env.ADMIN_USER}`,
+    pass: `${process.env.ADMIN_PASS}`,
   },
 });
 
-export default async function sendEmail(coinName: string, price: number) {
+export default async function sendEmail(
+  coinName: string,
+  price: number,
+  text: string
+) {
   await transporter.sendMail({
-    from: process.env.SENDER,
-    to: process.env.RECEIVE_EMAIL,
+    from: `${process.env.SENDER}`,
+    to: `${process.env.RECEIVE_EMAIL}`,
     subject: `${coinName} has reached $${price}`,
-    text: `${coinName} is now at $${price}, date: ${new Date()}`,
+    text: `${text} ~ date: ${new Date()}`,
   });
 }
